@@ -1,0 +1,268 @@
+ib/models.py contains model "Dog" with name and breed attributes. .         [ 11%]
+lib/dog.py contains function "create_table()" that takes a declarative_base and creates a SQLite database. F [ 22%]
+                                                                             [ 22%]
+lib/dog.py contains function "save()" that takes a Dog instance as an argument and saves the dog to the database. F [ 33%]
+                                                                             [ 33%]
+lib/dog.py contains function "get_all()" that takes a session and returns a list of Dog instances for every record in the database. F [ 44%]
+                                                                             [ 44%]
+lib/dog.py contains function "find_by_name()" that takes a session and name and returns a Dog instance corresponding to its database record retrieved by name. F [ 55%]
+                                                                             [ 55%]
+lib/dog.py contains function "find_by_id()" that takes a session and id and returns a Dog instance corresponding to its database record retrieved by id. F [ 66%]
+                                                                             [ 66%]
+lib/dog.py contains function "find_by_name_and_breed()" that takes a session, a name, and a breed as arguments and returns a Dog instance matching that record. F [ 77%]
+                                                                             [ 77%]
+lib/dog.py contains function "update_breed()" that takes a session instance, and breed as arguments and updates the instance's breed. F [ 88%]
+                                                                             [ 88%]
+app/models.py contains model "Dog" with name and breed attributes. .         [100%]
+
+===================================== FAILURES =====================================
+____________________________ TestDog.test_creates_table ____________________________
+
+self = <dog_test.TestDog object at 0x7fe19822c190>
+
+    def test_creates_table(self):
+        '''contains function "create_table()" that takes a declarative_base and creates a SQLite database.'''
+    
+        engine = create_engine(SQLITE_URL)
+>       create_table(Base, engine)
+E       TypeError: create_table() takes 1 positional argument but 2 were given
+
+lib/testing/dog_test.py:33: TypeError
+______________________________ TestDog.test_saves_dog ______________________________
+
+self = <dog_test.TestDog object at 0x7fe19822c070>
+
+    def test_saves_dog(self):
+        '''contains function "save()" that takes a Dog instance as an argument and saves the dog to the database.'''
+    
+        engine = create_engine(SQLITE_URL)
+        Base.metadata.create_all(engine)
+        Session = sessionmaker(bind=engine)
+        session = Session()
+    
+        joey = Dog(name="joey", breed="cocker spaniel")
+        save(session, joey)
+    
+>       assert session.query(Dog).first().name == 'joey'
+E       AttributeError: 'NoneType' object has no attribute 'name'
+
+lib/testing/dog_test.py:48: AttributeError
+______________________________ TestDog.test_gets_all _______________________________
+
+self = <dog_test.TestDog object at 0x7fe19822c370>
+
+    def test_gets_all(self):
+        '''contains function "get_all()" that takes a session and returns a list of Dog instances for every record in the database.'''
+    
+        engine = create_engine(SQLITE_URL)
+        Base.metadata.create_all(engine)
+        Session = sessionmaker(engine)
+        session = Session()
+    
+        dog_1 = Dog(name="fanny", breed="cockapoo")
+        dog_2 = Dog(name="conan", breed="chihuahua")
+        session.add_all([dog_1, dog_2])
+        session.commit()
+    
+        all_dogs = get_all(session)
+>       assert all_dogs[0].name == 'fanny' and \
+                all_dogs[1].name == 'conan'
+E       TypeError: 'NoneType' object is not subscriptable
+
+lib/testing/dog_test.py:67: TypeError
+____________________________ TestDog.test_finds_by_name ____________________________
+
+self = <dog_test.TestDog object at 0x7fe19822c4c0>
+
+    def test_finds_by_name(self):
+        '''contains function "find_by_name()" that takes a session and name and returns a Dog instance corresponding to its database record retrieved by name.'''
+    
+        engine = create_engine(SQLITE_URL)
+        Base.metadata.create_all(engine)
+        Session = sessionmaker(engine)
+        session = Session()
+    
+        dog = Dog(name="conan", breed="chihuahua")
+        session.add(dog)
+        session.commit()
+    
+        conan = find_by_name(session, 'conan')
+>       assert(conan.name == 'conan')
+E       AttributeError: 'NoneType' object has no attribute 'name'
+
+lib/testing/dog_test.py:88: AttributeError
+_____________________________ TestDog.test_finds_by_id _____________________________
+
+self = <dog_test.TestDog object at 0x7fe19822c5e0>
+
+    def test_finds_by_id(self):
+        '''contains function "find_by_id()" that takes a session and id and returns a Dog instance corresponding to its database record retrieved by id.'''
+    
+        engine = create_engine(SQLITE_URL)
+        Base.metadata.create_all(engine)
+        Session = sessionmaker(engine)
+        session = Session()
+    
+        dog = Dog(name="conan", breed="chihuahua")
+        session.add(dog)
+        session.commit()
+    
+        dog_1 = find_by_id(session, dog.id)
+>       assert dog_1.id == dog.id
+E       AttributeError: 'NoneType' object has no attribute 'id'
+
+lib/testing/dog_test.py:105: AttributeError
+_______________________ TestDog.test_finds_by_name_and_breed _______________________
+
+self = <dog_test.TestDog object at 0x7fe19822c700>
+
+    def test_finds_by_name_and_breed(self):
+        '''contains function "find_by_name_and_breed()" that takes a session, a name, and a breed as arguments and returns a Dog instance matching that record.'''
+    
+        engine = create_engine(SQLITE_URL)
+        Base.metadata.create_all(engine)
+        Session = sessionmaker(engine)
+        session = Session()
+    
+        dog = Dog(name="fanny", breed="cockapoo")
+        session.add(dog)
+        session.commit()
+    
+        fanny = find_by_name_and_breed(session, 'fanny', 'cockapoo')
+>       assert fanny.name == 'fanny' and fanny.breed == 'cockapoo'
+E       AttributeError: 'NoneType' object has no attribute 'name'
+
+lib/testing/dog_test.py:124: AttributeError
+___________________________ TestDog.test_updates_record ____________________________
+
+self = <dog_test.TestDog object at 0x7fe19822c820>
+
+    def test_updates_record(self):
+        '''contains function "update_breed()" that takes a session instance, and breed as arguments and updates the instance's breed.'''
+    
+        engine = create_engine(SQLITE_URL)
+        Base.metadata.create_all(engine)
+        Session = sessionmaker(engine)
+        session = Session()
+    
+        dog = Dog(name="joey", breed="cocker spaniel")
+        session.add(dog)
+        session.commit()
+    
+        joey = session.query(Dog).filter_by(name='joey').first()
+        update_breed(session, joey, 'bulldog')
+        updated_record = session.query(Dog).filter_by(name='joey').first()
+    
+>       assert updated_record.breed == 'bulldog'
+E       AssertionError: assert 'cocker spaniel' == 'bulldog'
+E         - bulldog
+E         + cocker spaniel
+
+lib/testing/dog_test.py:144: AssertionError
+================================= warnings summary =================================
+lib/models.py:6
+  /home/shee/Documents/phase-3/python-p3-translating-from-orms-to-sqlalchemy-lab/lib/models.py:6: MovedIn20Warning: Deprecated API features detected! These feature(s) are not compatible with SQLAlchemy 2.0. To prevent incompatible upgrades prior to updating applications, ensure requirements files are pinned to "sqlalchemy<2.0". Set environment variable SQLALCHEMY_WARN_20=1 to show all deprecation warnings.  Set environment variable SQLALCHEMY_SILENCE_UBER_WARNING=1 to silence this message. (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+    Base = declarative_base()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+============================= short test summary info ==============================
+FAILED lib/dog.py contains function "create_table()" that takes a declarative_base and creates a SQLite database. - TypeError: create_table() takes 1 positional argument but 2 were given
+FAILED lib/dog.py contains function "save()" that takes a Dog instance as an argument and saves the dog to the database. - AttributeError: 'NoneType' object has no attribute 'name'
+FAILED lib/dog.py contains function "get_all()" that takes a session and returns a list of Dog instances for every record in the database. - TypeError: 'NoneType' object is not subscriptable
+FAILED lib/dog.py contains function "find_by_name()" that takes a session and name and returns a Dog instance corresponding to its database record retrieved by name. - AttributeError: 'NoneType' object has no attribute 'name'
+FAILED lib/dog.py contains function "find_by_id()" that takes a session and id and returns a Dog instance corresponding to its database record retrieved by id. - AttributeError: 'NoneType' object has no attribute 'id'
+FAILED lib/dog.py contains function "find_by_name_and_breed()" that takes a session, a name, and a breed as arguments and returns a Dog instance matching that record. - AttributeError: 'NoneType' object has no attribute 'name'
+FAILED lib/dog.py contains function "update_breed()" that takes a session instance, and breed as arguments and updates the instance's breed. - AssertionError: assert 'cocker spaniel' == 'bulldog'
+====================== 7 failed, 2 passed, 1 warning in 0.75s ======================
+(python-p3-translating-from-orms-to-sqlalchemy-lab) shee@shee-HP-ProBook-X360-11-G2-EE:~/Documents/phase-3/python-p3-translating-from-orms-to-sqlalchemy-lab$ 
+ChatGPT said:
+ChatGPT
+It looks like there are several issues with the code related to database operations for the Dog model. Let's go through each error and potential fix:
+
+1. create_table() Function
+Error: TypeError: create_table() takes 1 positional argument but 2 were given
+
+Issue: The function create_table() is likely defined to take only one argument, but in your test, it is being passed two (Base and engine).
+
+Fix: Make sure the create_table() function is defined to take both Base and engine as parameters. For example:
+
+python
+Copy code
+def create_table(base, engine):
+    base.metadata.create_all(engine)
+2. save() Function
+Error: AttributeError: 'NoneType' object has no attribute 'name'
+
+Issue: The save() function is likely not returning or committing the object properly, which results in None when querying.
+
+Fix: Ensure that the save() function is correctly handling the database session and committing the object:
+
+python
+Copy code
+def save(session, dog):
+    session.add(dog)
+    session.commit()
+3. get_all() Function
+Error: TypeError: 'NoneType' object is not subscriptable
+
+Issue: get_all() is returning None, causing issues when trying to index the result.
+
+Fix: Ensure get_all() returns a list of Dog objects:
+
+python
+Copy code
+def get_all(session):
+    return session.query(Dog).all()
+4. find_by_name() Function
+Error: AttributeError: 'NoneType' object has no attribute 'name'
+
+Issue: find_by_name() might not be finding the object and returning None.
+
+Fix: Make sure find_by_name() is querying correctly:
+
+python
+Copy code
+def find_by_name(session, name):
+    return session.query(Dog).filter_by(name=name).first()
+5. find_by_id() Function
+Error: AttributeError: 'NoneType' object has no attribute 'id'
+
+Issue: Similar to find_by_name(), find_by_id() might not be finding the object.
+
+Fix: Ensure find_by_id() queries correctly:
+
+python
+Copy code
+def find_by_id(session, id):
+    return session.query(Dog).filter_by(id=id).first()
+6. find_by_name_and_breed() Function
+Error: AttributeError: 'NoneType' object has no attribute 'name'
+
+Issue: The function find_by_name_and_breed() is likely not finding the record and returning None.
+
+Fix: Ensure the query is correct:
+
+python
+Copy code
+def find_by_name_and_breed(session, name, breed):
+    return session.query(Dog).filter_by(name=name, breed=breed).first()
+7. update_breed() Function
+Error: AssertionError: assert 'cocker spaniel' == 'bulldog'
+
+Issue: update_breed() might not be updating the record properly.
+
+Fix: Ensure that update_breed() updates the record correctly:
+
+python
+Copy code
+def update_breed(session, dog, new_breed):
+    dog.breed = new_breed
+    session.commit()
+General Advice
+Check Function Definitions: Verify that the function signatures in your lib/dog.py file match the expected arguments and operations in your tests.
+Debug Outputs: Print debug statements to verify the contents of variables and ensure the database operations are working as expected.
+Session Handling: Make sure sessions are managed correctly, with proper commits and queries.
+Address these issues one by one and rerun your tests to ensure that each function is performing as expected.
+
+
+
